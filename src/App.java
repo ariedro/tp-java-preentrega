@@ -5,6 +5,7 @@ public class App {
     static Scanner sc = new Scanner(System.in);
     static Menu menu = new Menu();
     static ArrayList<Producto> productos = new ArrayList<Producto>();
+    static ArrayList<Pedido> pedidos = new ArrayList<Pedido>();
 
     public static void main(String[] args) throws Exception {
         int opcion = 0;
@@ -23,10 +24,13 @@ public class App {
                     buscarProducto();
                     break;
                 case 4:
+                    eliminarProducto();
                     break;
                 case 5:
+                    crearPedido();
                     break;
                 case 6:
+                    listarPedidos();
                     break;
             }
         }
@@ -49,7 +53,17 @@ public class App {
             }
         }
 
-        Producto nuevoProducto = new Producto(nombre, precio);
+        int stock = 0;
+        System.out.println("Ingrese el stock");
+        while (stock < 0) {
+            precio = sc.nextInt();
+            sc.nextLine();
+            if (stock < 0) {
+                System.out.println("Ingrese un stock válido");
+            }
+        }
+
+        Producto nuevoProducto = new Producto(nombre, precio, stock);
         productos.add(nuevoProducto);
     }
 
@@ -86,7 +100,7 @@ public class App {
                     String nombreBuscado = sc.next();
                     sc.nextLine();
                     for (Producto producto : productos) {
-                        if (producto.getNombre().toLowerCase().matches(nombreBuscado.toLowerCase())) {
+                        if (producto.getNombre().toLowerCase().contains(nombreBuscado.toLowerCase())) {
                             productoEncontrado = producto;
                             break;
                         }
@@ -101,13 +115,69 @@ public class App {
         productoEncontrado.imprimir();
 
         String opcionSiNo = "";
-        while (opcionSiNo != "S" || opcionSiNo != "N") {
+        while (!opcionSiNo.contains("S") && !opcionSiNo.contains("N")) {
             System.out.println("Desea modificar el producto? (S/N)");
             opcionSiNo = sc.next();
             sc.nextLine();
         }
-        if (opcionSiNo == "S") {
-            // TODO
+        if (opcionSiNo.contains("S")) {
+            System.out.println("Ingrese el nombre");
+            String nombre = sc.next();
+            sc.nextLine();
+
+            float precio = 0;
+            System.out.println("Ingrese el precio");
+            while (precio <= 0) {
+                precio = sc.nextFloat();
+                sc.nextLine();
+                if (precio <= 0) {
+                    System.out.println("Ingrese un precio válido");
+                }
+            }
+
+            productoEncontrado.setNombre(nombre);
+            productoEncontrado.setPrecio(precio);
+        }
+    }
+
+    private static void eliminarProducto() {
+        // TODO: Refactor
+        Producto productoEncontrado = null;
+        System.out.println("Ingrese el id del producto que desea eliminar");
+        int idBuscada = sc.nextInt();
+        sc.nextLine();
+        for (Producto producto : productos) {
+            if (producto.getId() == idBuscada) {
+                productoEncontrado = producto;
+                break;
+            }
+        }
+        if (productoEncontrado == null) {
+            System.out.println("Producto no encontrado");
+            return;
+        }
+        productoEncontrado.imprimir();
+
+        String opcionSiNo = "";
+        while (!opcionSiNo.contains("S") && !opcionSiNo.contains("N")) {
+            System.out.println("Desea eliminar el producto? (S/N)");
+            opcionSiNo = sc.next();
+            sc.nextLine();
+        }
+        if (opcionSiNo.contains("S")) {
+            productos.remove(productoEncontrado);
+        }
+    }
+
+    private static void crearPedido() {
+        Pedido nuevoPedido = new Pedido();
+        // TODO: Add menu de agregar productos al pedido
+        pedidos.add(nuevoPedido);
+    }
+
+    private static void listarPedidos() {
+        for (Pedido pedido : pedidos) {
+            pedido.imprimir();
         }
     }
 }
