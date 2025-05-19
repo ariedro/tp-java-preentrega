@@ -3,30 +3,32 @@ import java.util.ArrayList;
 public class Pedido {
   private int id;
   private ArrayList<Producto> productos;
-  private float costoTotal;
 
   static int idActual = 0;
 
   public Pedido() {
     this.id = idActual++;
     this.productos = new ArrayList<Producto>();
-    this.costoTotal = 0;
   }
 
   public void imprimir() {
-    System.out.println("Pedido [ " + this.id + ']');
+    System.out.println("Pedido [" + this.id + "]:");
     for (Producto producto : this.productos) {
       producto.imprimir();
     }
   }
 
-  public void agregarProducto(Producto producto, int cantidad) {
+  public void agregarProducto(Producto producto, int cantidad) throws StockInsuficienteException {
     producto.sacar(cantidad);
-    this.productos.add(producto);
-    this.costoTotal += producto.getPrecio() * cantidad;
+    Producto productoAAgregar = new Producto(producto.getNombre(), producto.getPrecio(), cantidad);
+    this.productos.add(productoAAgregar);
   }
 
   public float getCostoTotal() {
-    return this.costoTotal;
+    float suma = 0;
+    for (Producto producto : this.productos) {
+      suma += producto.getPrecio();
+    }
+    return suma;
   }
 }

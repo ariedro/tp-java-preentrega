@@ -14,7 +14,7 @@ public class Producto {
   }
 
   public void imprimir() {
-    System.out.println("[" + this.id + "] " + this.nombre + " - $" + this.precio + "( " + this.stock + " )");
+    System.out.println("[" + this.id + "] " + this.nombre + " $" + this.precio + " (" + this.stock + ")");
   }
 
   public int getId() {
@@ -37,9 +37,9 @@ public class Producto {
     this.precio = nuevoPrecio;
   }
 
-  public void sacar(int cantidad) {
+  public void sacar(int cantidad) throws StockInsuficienteException {
     if (this.stock < cantidad) {
-      throw new Error("No hay suficiente stock");
+      throw new StockInsuficienteException();
     }
     this.stock -= cantidad;
   }

@@ -53,10 +53,10 @@ public class App {
             }
         }
 
-        int stock = 0;
+        int stock = -1;
         System.out.println("Ingrese el stock");
         while (stock < 0) {
-            precio = sc.nextInt();
+            stock = sc.nextInt();
             sc.nextLine();
             if (stock < 0) {
                 System.out.println("Ingrese un stock válido");
@@ -171,7 +171,34 @@ public class App {
 
     private static void crearPedido() {
         Pedido nuevoPedido = new Pedido();
-        // TODO: Add menu de agregar productos al pedido
+        Producto productoEncontrado = null;
+        String opcion = "S";
+        while (opcion.contains("S")) {
+            System.out.println("Ingrese el id del producto que desea agregar al pedido");
+            int idBuscada = sc.nextInt();
+            sc.nextLine();
+            for (Producto producto : productos) {
+                if (producto.getId() == idBuscada) {
+                    productoEncontrado = producto;
+                    break;
+                }
+            }
+            if (productoEncontrado == null) {
+                System.out.println("Producto no encontrado");
+                return;
+            }
+            System.out.println("Ingrese la cantidad que desea agregar");
+            int cantidad = sc.nextInt();
+            sc.nextLine();
+            try {
+                nuevoPedido.agregarProducto(productoEncontrado, cantidad);
+            } catch (StockInsuficienteException error) {
+                System.out.println(error.getMessage());
+            }
+            System.out.println("Desea agregar otro producto al pedido? (S/N)");
+            opcion = sc.next();
+            sc.nextLine();
+        }
         pedidos.add(nuevoPedido);
     }
 
