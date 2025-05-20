@@ -1,8 +1,6 @@
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class App {
-    static Scanner sc = new Scanner(System.in);
     static Menu menu = new Menu();
     static ArrayList<Producto> productos = new ArrayList<Producto>();
     static ArrayList<Pedido> pedidos = new ArrayList<Pedido>();
@@ -11,8 +9,7 @@ public class App {
         int opcion = 0;
         while (opcion != 7) {
             menu.imprimirMainMenu();
-            opcion = sc.nextInt();
-            sc.nextLine();
+            opcion = menu.pedirInt("Elija una opción");
             switch (opcion) {
                 case 1:
                     agregarProducto();
@@ -37,27 +34,19 @@ public class App {
     }
 
     private static void agregarProducto() {
-        System.out.println("Creando un nuevo producto");
-
-        System.out.println("Ingrese el nombre");
-        String nombre = sc.next();
-        sc.nextLine();
+        String nombre = menu.pedirString("Ingrese el nombre");
 
         float precio = 0;
-        System.out.println("Ingrese el precio");
         while (precio <= 0) {
-            precio = sc.nextFloat();
-            sc.nextLine();
+            precio = menu.pedirFloat("Ingrese el precio");
             if (precio <= 0) {
                 System.out.println("Ingrese un precio válido");
             }
         }
 
         int stock = -1;
-        System.out.println("Ingrese el stock");
         while (stock < 0) {
-            stock = sc.nextInt();
-            sc.nextLine();
+            stock = menu.pedirInt("Ingrese el stock");
             if (stock < 0) {
                 System.out.println("Ingrese un stock válido");
             }
@@ -78,15 +67,11 @@ public class App {
         Producto productoEncontrado = null;
         int opcionNumerica = 0;
         while (opcionNumerica < 1 || opcionNumerica > 2) {
-            menu.imprimirBusquedaMenu();
-            opcionNumerica = sc.nextInt();
-            sc.nextLine();
+            opcionNumerica = menu.pedirMenuBusqueda();
             switch (opcionNumerica) {
                 // Por id
                 case 1:
-                    System.out.println("Ingrese el id del producto que desea buscar");
-                    int idBuscada = sc.nextInt();
-                    sc.nextLine();
+                    int idBuscada = menu.pedirInt("Ingrese el id del producto que desea buscar");
                     for (Producto producto : productos) {
                         if (producto.getId() == idBuscada) {
                             productoEncontrado = producto;
@@ -96,9 +81,7 @@ public class App {
                     break;
                 // Por nombre
                 case 2:
-                    System.out.println("Ingrese el nombre del producto que desea buscar");
-                    String nombreBuscado = sc.next();
-                    sc.nextLine();
+                    String nombreBuscado = menu.pedirString("Ingrese el nombre del producto que desea buscar");
                     for (Producto producto : productos) {
                         if (producto.getNombre().toLowerCase().contains(nombreBuscado.toLowerCase())) {
                             productoEncontrado = producto;
@@ -116,20 +99,14 @@ public class App {
 
         String opcionSiNo = "";
         while (!opcionSiNo.contains("S") && !opcionSiNo.contains("N")) {
-            System.out.println("Desea modificar el producto? (S/N)");
-            opcionSiNo = sc.next();
-            sc.nextLine();
+            opcionSiNo = menu.pedirString("Desea modificar el producto? (S/N)");
         }
         if (opcionSiNo.contains("S")) {
-            System.out.println("Ingrese el nombre");
-            String nombre = sc.next();
-            sc.nextLine();
+            String nombre = menu.pedirString("Ingrese el nombre");
 
             float precio = 0;
-            System.out.println("Ingrese el precio");
             while (precio <= 0) {
-                precio = sc.nextFloat();
-                sc.nextLine();
+                precio = menu.pedirFloat("Ingrese el precio");
                 if (precio <= 0) {
                     System.out.println("Ingrese un precio válido");
                 }
@@ -143,9 +120,7 @@ public class App {
     private static void eliminarProducto() {
         // TODO: Refactor
         Producto productoEncontrado = null;
-        System.out.println("Ingrese el id del producto que desea eliminar");
-        int idBuscada = sc.nextInt();
-        sc.nextLine();
+        int idBuscada = menu.pedirInt("Ingrese el id del producto que desea eliminar");
         for (Producto producto : productos) {
             if (producto.getId() == idBuscada) {
                 productoEncontrado = producto;
@@ -160,9 +135,7 @@ public class App {
 
         String opcionSiNo = "";
         while (!opcionSiNo.contains("S") && !opcionSiNo.contains("N")) {
-            System.out.println("Desea eliminar el producto? (S/N)");
-            opcionSiNo = sc.next();
-            sc.nextLine();
+            opcionSiNo = menu.pedirString("Desea eliminar el producto? (S/N)");
         }
         if (opcionSiNo.contains("S")) {
             productos.remove(productoEncontrado);
@@ -174,9 +147,8 @@ public class App {
         Producto productoEncontrado = null;
         String opcion = "S";
         while (opcion.contains("S")) {
-            System.out.println("Ingrese el id del producto que desea agregar al pedido");
-            int idBuscada = sc.nextInt();
-            sc.nextLine();
+            System.out.println();
+            int idBuscada = menu.pedirInt("Ingrese el id del producto que desea agregar al pedido");
             for (Producto producto : productos) {
                 if (producto.getId() == idBuscada) {
                     productoEncontrado = producto;
@@ -187,17 +159,13 @@ public class App {
                 System.out.println("Producto no encontrado");
                 return;
             }
-            System.out.println("Ingrese la cantidad que desea agregar");
-            int cantidad = sc.nextInt();
-            sc.nextLine();
+            int cantidad = menu.pedirInt("Ingrese la cantidad que desea agregar");
             try {
                 nuevoPedido.agregarProducto(productoEncontrado, cantidad);
             } catch (StockInsuficienteException error) {
                 System.out.println(error.getMessage());
             }
-            System.out.println("Desea agregar otro producto al pedido? (S/N)");
-            opcion = sc.next();
-            sc.nextLine();
+            opcion = menu.pedirString("Desea agregar otro producto al pedido? (S/N)");
         }
         pedidos.add(nuevoPedido);
     }
