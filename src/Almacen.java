@@ -28,7 +28,7 @@ public class Almacen {
 
   public Producto buscarProducto(String nombreBuscado) {
     for (Producto producto : productos) {
-      if (producto.getNombre() == nombreBuscado) {
+      if (producto.getNombre().toLowerCase().contains(nombreBuscado.toLowerCase())) {
         return producto;
       }
     }
