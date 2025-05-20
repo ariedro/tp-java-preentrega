@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public class App {
     static Menu menu = new Menu();
-    static ArrayList<Producto> productos = new ArrayList<Producto>();
+    static Almacen almacen = new Almacen();
     static ArrayList<Pedido> pedidos = new ArrayList<Pedido>();
 
     public static void main(String[] args) throws Exception {
@@ -53,17 +53,14 @@ public class App {
         }
 
         Producto nuevoProducto = new Producto(nombre, precio, stock);
-        productos.add(nuevoProducto);
+        almacen.agregarProducto(nuevoProducto);
     }
 
     private static void listarProductos() {
-        for (Producto producto : productos) {
-            producto.imprimir();
-        }
+        almacen.listarProductos();
     }
 
     private static void buscarProducto() {
-        // TODO: Refactor
         Producto productoEncontrado = null;
         int opcionNumerica = 0;
         while (opcionNumerica < 1 || opcionNumerica > 2) {
@@ -72,22 +69,12 @@ public class App {
                 // Por id
                 case 1:
                     int idBuscada = menu.pedirInt("Ingrese el id del producto que desea buscar");
-                    for (Producto producto : productos) {
-                        if (producto.getId() == idBuscada) {
-                            productoEncontrado = producto;
-                            break;
-                        }
-                    }
+                    productoEncontrado = almacen.buscarProducto(idBuscada);
                     break;
                 // Por nombre
                 case 2:
                     String nombreBuscado = menu.pedirString("Ingrese el nombre del producto que desea buscar");
-                    for (Producto producto : productos) {
-                        if (producto.getNombre().toLowerCase().contains(nombreBuscado.toLowerCase())) {
-                            productoEncontrado = producto;
-                            break;
-                        }
-                    }
+                    productoEncontrado = almacen.buscarProducto(nombreBuscado);
                     break;
             }
         }
@@ -118,15 +105,9 @@ public class App {
     }
 
     private static void eliminarProducto() {
-        // TODO: Refactor
-        Producto productoEncontrado = null;
         int idBuscada = menu.pedirInt("Ingrese el id del producto que desea eliminar");
-        for (Producto producto : productos) {
-            if (producto.getId() == idBuscada) {
-                productoEncontrado = producto;
-                break;
-            }
-        }
+        Producto productoEncontrado = almacen.buscarProducto(idBuscada);
+
         if (productoEncontrado == null) {
             System.out.println("Producto no encontrado");
             return;
@@ -138,23 +119,18 @@ public class App {
             opcionSiNo = menu.pedirString("Desea eliminar el producto? (S/N)");
         }
         if (opcionSiNo.contains("S")) {
-            productos.remove(productoEncontrado);
+            almacen.eliminarProducto(productoEncontrado);
         }
     }
 
     private static void crearPedido() {
         Pedido nuevoPedido = new Pedido();
-        Producto productoEncontrado = null;
         String opcion = "S";
         while (opcion.contains("S")) {
             System.out.println();
             int idBuscada = menu.pedirInt("Ingrese el id del producto que desea agregar al pedido");
-            for (Producto producto : productos) {
-                if (producto.getId() == idBuscada) {
-                    productoEncontrado = producto;
-                    break;
-                }
-            }
+            Producto productoEncontrado = almacen.buscarProducto(idBuscada);
+
             if (productoEncontrado == null) {
                 System.out.println("Producto no encontrado");
                 return;
